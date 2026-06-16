@@ -9,6 +9,18 @@ load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
+# Auto-build database if it doesn't exist (needed for cloud deployment)
+def ensure_database():
+    if not os.path.exists("ipl.db"):
+        matches = pd.read_csv("matches.csv")
+        deliveries = pd.read_csv("deliveries.csv")
+        conn = sqlite3.connect("ipl.db")
+        matches.to_sql("matches", conn, if_exists="replace", index=False)
+        deliveries.to_sql("deliveries", conn, if_exists="replace", index=False)
+        conn.close()
+
+ensure_database()  # Run it on startup
+
 # ── Build dynamic schema with actual player/team names ──────────────────────
 def get_schema() -> str:
     conn = sqlite3.connect("ipl.db")
@@ -247,4 +259,4 @@ if question:
 
 # Footer
 st.markdown("---")
-st.markdown("Built with Groq + LLaMA 3.3 · IPL data 2008–2022 · [GitHub](#)")
+st.markdown("Built with Groq + LLaMA 3.3 · IPL data 2008–2024 · [GitHub](https://github.com/agrahariayush18/IPL-Datachat)")

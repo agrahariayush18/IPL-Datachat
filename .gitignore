@@ -3,4 +3,4 @@ venv/
 __pycache__/
 *.pyc
 ipl.db
-.DS_Store
+.DS_Store.streamlit/secrets.toml
