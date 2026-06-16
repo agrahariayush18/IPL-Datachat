@@ -254,8 +254,12 @@ if question:
                 if len(df.columns) == 2 and pd.api.types.is_numeric_dtype(df.iloc[:, 1]):
                     st.bar_chart(df.set_index(df.columns[0]))
         except Exception as e:
-            st.error(f"Could not answer this question: {e}")
-            st.info("Try rephrasing your question.")
+            error_msg = str(e)
+            if "rate_limit" in error_msg or "429" in error_msg:
+                st.warning("⏳ The free AI quota for today has been reached. Please try again later — this resets daily.")
+            else:
+                st.error(f"Could not answer this question: {e}")
+                st.info("Try rephrasing your question.")
 
 # Footer
 st.markdown("---")
